@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Getter
 @Setter
@@ -19,7 +21,28 @@ public class URL {
     private String originURL;
 
     @Column(nullable = false)
-    private String shortenURL;
+    private String shortCode;
 
+    @Column(updatable = false)
+    private LocalDateTime createdAt;
 
+    private LocalDateTime updatedAt;
+
+    private int accessCount;
+
+    @PrePersist
+    public void createdAt() {
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    public void updatedAt() {
+        updatedAt = LocalDateTime.now();
+    }
+
+    public URL(String originURL, String shortCode) {
+        this.originURL = originURL;
+        this.shortCode = shortCode;
+    }
 }
