@@ -6,7 +6,7 @@ public interface URLService {
 
     URL saveShorten(URL url);
 
-    URL getShorten(String shortCode);
+    URL getOrigin(String shortCode);
 
     void deleteShorten(String shortCode);
 
