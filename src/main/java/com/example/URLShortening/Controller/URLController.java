@@ -7,6 +7,7 @@ import com.example.URLShortening.Entity.URL;
 import com.example.URLShortening.Service.Impl.ShortenUrlService;
 import com.example.URLShortening.Service.URLService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +25,7 @@ public class URLController {
     @PostMapping
     private ResponseEntity<URLResponseDTO> createShortenURL(@RequestBody URLRequestDTO urlRequestDTO) {
         URL newURL = new URL(urlRequestDTO.getOriginalURL(), shortenUrlService.generateShortCode());
+        urlService.saveShorten(newURL);
         URLResponseDTO response = new URLResponseDTO(newURL.getId(), newURL.getOriginURL(), newURL.getShortCode(), newURL.getCreatedAt(), newURL.getUpdatedAt());
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
@@ -35,9 +37,22 @@ public class URLController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    @GetMapping("/{shortCode}/redirect")
+    private ResponseEntity<Void> retrieveAndRedirectOriginalURL(@PathVariable  String shortCode) {
+        URL newURL = urlService.getOrigin(shortCode);
+        return ResponseEntity.status(HttpStatus.TEMPORARY_REDIRECT).header(HttpHeaders.LOCATION, newURL.getOriginURL()).build();
+    }
+
     @PutMapping("/{shortCode}")
     private ResponseEntity<URLResponseDTO> updateShortenURL(@PathVariable  String shortCode) {
-        URL newURL = urlService.updateShorten(shortCode);
+        URL newURL = urlService.updateShortenCode(shortCode);
+        URLResponseDTO response = new URLResponseDTO(newURL.getId(), newURL.getOriginURL(), newURL.getShortCode(), newURL.getCreatedAt(), newURL.getUpdatedAt());
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @PutMapping("/url/{shortCode}")
+    private ResponseEntity<URLResponseDTO> updateNewURL(@PathVariable String shortCode, @RequestBody URLRequestDTO urlRequestDTO) {
+        URL newURL = urlService.updateURL(shortCode, urlRequestDTO.getOriginalURL());
         URLResponseDTO response = new URLResponseDTO(newURL.getId(), newURL.getOriginURL(), newURL.getShortCode(), newURL.getCreatedAt(), newURL.getUpdatedAt());
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }

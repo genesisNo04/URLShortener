@@ -44,5 +44,6 @@ public class URL {
     public URL(String originURL, String shortCode) {
         this.originURL = originURL;
         this.shortCode = shortCode;
+        accessCount = 0;
     }
 }

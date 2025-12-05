@@ -10,7 +10,7 @@ public interface URLService {
 
     void deleteShorten(String shortCode);
 
-    URL updateShorten(String shortCode);
+    URL updateShortenCode(String shortCode);
 
-
+    URL updateURL(String shortCode, String newUrl);
 }
