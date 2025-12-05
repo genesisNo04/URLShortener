@@ -6,6 +6,7 @@ import com.example.URLShortening.DTO.URLStatsResponseDTO;
 import com.example.URLShortening.Entity.URL;
 import com.example.URLShortening.Service.Impl.ShortenUrlService;
 import com.example.URLShortening.Service.URLService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -23,7 +24,7 @@ public class URLController {
     private ShortenUrlService shortenUrlService;
 
     @PostMapping
-    private ResponseEntity<URLResponseDTO> createShortenURL(@RequestBody URLRequestDTO urlRequestDTO) {
+    private ResponseEntity<URLResponseDTO> createShortenURL(@Valid @RequestBody URLRequestDTO urlRequestDTO) {
         URL newURL = new URL(urlRequestDTO.getOriginalURL(), shortenUrlService.generateShortCode());
         urlService.saveShorten(newURL);
         URLResponseDTO response = new URLResponseDTO(newURL.getId(), newURL.getOriginURL(), newURL.getShortCode(), newURL.getCreatedAt(), newURL.getUpdatedAt());
@@ -51,7 +52,7 @@ public class URLController {
     }
 
     @PutMapping("/url/{shortCode}")
-    private ResponseEntity<URLResponseDTO> updateNewURL(@PathVariable String shortCode, @RequestBody URLRequestDTO urlRequestDTO) {
+    private ResponseEntity<URLResponseDTO> updateNewURL(@PathVariable String shortCode, @Valid @RequestBody URLRequestDTO urlRequestDTO) {
         URL newURL = urlService.updateURL(shortCode, urlRequestDTO.getOriginalURL());
         URLResponseDTO response = new URLResponseDTO(newURL.getId(), newURL.getOriginURL(), newURL.getShortCode(), newURL.getCreatedAt(), newURL.getUpdatedAt());
         return ResponseEntity.status(HttpStatus.CREATED).body(response);

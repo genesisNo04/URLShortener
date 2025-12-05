@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Service
 public class ShortenUrlService {
@@ -14,7 +15,7 @@ public class ShortenUrlService {
 
     String chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
-    Random r = new Random();
+    ThreadLocalRandom r = ThreadLocalRandom.current();
 
     public String generateShortCode() {
         String code;
